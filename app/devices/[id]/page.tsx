@@ -41,13 +41,10 @@ export default async function DeviceDetailsPage({ params }: { params: Promise<{ 
     ["Return policy", product.return_policy],
     ["Full specifications", product.specifications],
   ].filter((entry): entry is [string, string] => Boolean(entry[1]));
-  const inquiryHref = contact.phone
-    ? `tel:${contact.phone.replace(/[^\d+]/g, "")}`
-    : contact.email
-      ? `mailto:${contact.email}?subject=${encodeURIComponent(`Question about ${product.name}`)}`
-      : contact.whatsapp
-        ? `https://wa.me/${contact.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi, I want to know more about ${product.name}.`)}`
-        : `/contact?device=${encodeURIComponent(product.name)}`;
+  const whatsappNumber = (contact.whatsapp || contact.phone || "").replace(/\D/g, "");
+  const inquiryHref = whatsappNumber
+    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi, I want to know more about ${product.name}. Is it available?`)}`
+    : `/contact?device=${encodeURIComponent(product.name)}`;
 
   return (
     <SiteLayout settings={settings} contact={contact}>
