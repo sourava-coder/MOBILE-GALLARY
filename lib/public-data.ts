@@ -13,6 +13,7 @@ import type {
   Member,
   Product,
   RepairService,
+  ShopPhoto,
 } from "@/lib/types";
 
 const getCachedPublicData = unstable_cache(
@@ -32,8 +33,9 @@ const getCachedPublicData = unstable_cache(
       supabase.from("repair_services").select("*").order("created_at", { ascending: false }),
       supabase.from("members").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_details").select("*").limit(1).maybeSingle(),
+      supabase.from("shop_gallery").select("*").order("sort_order", { ascending: true }),
     ]);
-    const [settings, products, services, members, contact] = results;
+    const [settings, products, services, members, contact, gallery] = results;
     const failedQuery = results.find((result) => result.error);
     if (failedQuery?.error) {
       throw new Error(`Could not load storefront content from Supabase: ${failedQuery.error.message}`);
@@ -45,6 +47,7 @@ const getCachedPublicData = unstable_cache(
       services: (services.data ?? fallbackServices) as RepairService[],
       members: (members.data ?? fallbackMembers) as Member[],
       contact: (contact.data ?? fallbackContactDetails) as ContactDetails,
+      gallery: (gallery.data ?? []) as ShopPhoto[],
     };
   },
   ["mobile-gallary-public-data"],
@@ -60,6 +63,7 @@ export async function getPublicData() {
       services: fallbackServices,
       members: fallbackMembers,
       contact: fallbackContactDetails,
+      gallery: [],
     };
   }
   return cachedData;

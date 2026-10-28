@@ -68,6 +68,15 @@ export type ContactDetails = {
   updated_at?: string;
 };
 
+export type ShopPhoto = {
+  id?: string;
+  page: "home" | "visit";
+  image_url: string;
+  alt_text: string;
+  sort_order: number;
+  created_at?: string;
+};
+
 export type LegalPage = {
   id?: string;
   title: string;
@@ -82,6 +91,7 @@ export type AdminResource =
   | "repair_services"
   | "members"
   | "contact_details"
+  | "shop_gallery"
   | "privacy_policies"
   | "terms";
 
@@ -91,4 +101,5 @@ export type AdminRecord =
   | RepairService
   | Member
   | ContactDetails
+  | ShopPhoto
   | LegalPage;

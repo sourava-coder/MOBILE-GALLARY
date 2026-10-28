@@ -22,6 +22,7 @@ const resourceFields = {
     "instagram_url", "facebook_url",
     "shop_image_url", "shop_image_alt",
   ],
+  shop_gallery: ["page", "image_url", "alt_text", "sort_order"],
   privacy_policies: ["title", "content"],
   terms: ["title", "content"],
 } as const;
@@ -55,9 +56,12 @@ function validateValues(table: AdminTable, input: unknown) {
       continue;
     }
 
-    if (key === "price") {
+    if (key === "price" || key === "sort_order") {
       if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
-        return { values: null, error: "Price must be a non-negative number." };
+        return { values: null, error: `${key} must be a non-negative number.` };
+      }
+      if (key === "sort_order" && !Number.isInteger(value)) {
+        return { values: null, error: "sort_order must be a whole number." };
       }
       cleaned[key] = value;
       continue;
@@ -79,6 +83,9 @@ function validateValues(table: AdminTable, input: unknown) {
 
   if (table === "homepage_settings" && !cleaned.currency_code) {
     cleaned.currency_code = "INR";
+  }
+  if (table === "shop_gallery" && !["home", "visit"].includes(String(cleaned.page))) {
+    return { values: null, error: "Choose Home or Visit us for this photo." };
   }
 
   for (const requiredKey of table === "homepage_settings"

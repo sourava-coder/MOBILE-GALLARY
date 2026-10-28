@@ -7,7 +7,8 @@ import { getPublicData } from "@/lib/public-data";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const { settings, contact } = await getPublicData();
+  const { settings, contact, gallery } = await getPublicData();
+  const homePhotos = gallery.filter((photo) => photo.page === "home");
 
   return (
     <SiteLayout settings={settings} contact={contact}>
@@ -56,16 +57,15 @@ export default async function HomePage() {
           <div><span className="trust-icon"><ShieldCheck size={19} /></span><span><strong>Honest guidance</strong><small>Real answers, no pressure</small></span></div>
           <div><span className="trust-icon"><Clock3 size={19} /></span><span><strong>Here when you need us</strong><small>Friendly local support</small></span></div>
         </section>
-        {settings.shop_image_url && (
+        {homePhotos.length > 0 && (
           <section className="shop-showcase page-width" aria-label="Mobile Gallary shop">
             <div className="shop-showcase-copy">
               <p className="section-label">A place for better device care</p>
               <h2>Step into Mobile Gallary.</h2>
               <p>Visit us for friendly advice, careful repairs, and a closer look at the devices we recommend.</p>
             </div>
-            <div className="shop-photo-wrap">
-              <img src={settings.shop_image_url} alt={settings.shop_image_alt || "Mobile Gallary shop"} className="shop-photo" loading="lazy" />
-              <span className="photo-caption">Inside Mobile Gallary</span>
+            <div className="shop-gallery">
+              {homePhotos.map((photo) => <div className="shop-photo-wrap" key={photo.id ?? photo.image_url}><img src={photo.image_url} alt={photo.alt_text} className="shop-photo" loading="lazy" /><span className="photo-caption">Inside Mobile Gallary</span></div>)}
             </div>
           </section>
         )}

@@ -94,6 +94,23 @@ create table if not exists public.contact_details (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+create table if not exists public.shop_gallery (
+  id uuid primary key default uuid_generate_v4(),
+  page text not null check (page in ('home', 'visit')),
+  image_url text not null,
+  alt_text text not null default 'Mobile Gallary shop',
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now()
+);
+alter table public.shop_gallery enable row level security;
+grant select on public.shop_gallery to anon, authenticated;
+grant insert, update, delete on public.shop_gallery to authenticated;
+drop policy if exists "Public can read shop gallery" on public.shop_gallery;
+create policy "Public can read shop gallery" on public.shop_gallery for select to anon, authenticated using (true);
+drop policy if exists "Admins manage shop gallery" on public.shop_gallery;
+create policy "Admins manage shop gallery" on public.shop_gallery for all to authenticated
+using (exists (select 1 from public.admin_users where user_id = (select auth.uid())))
+with check (exists (select 1 from public.admin_users where user_id = (select auth.uid())));
 alter table public.contact_details add column if not exists shop_image_url text;
 alter table public.contact_details add column if not exists shop_image_alt text default 'Mobile Gallary shop';
 

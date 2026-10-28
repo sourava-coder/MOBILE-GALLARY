@@ -17,6 +17,7 @@ const allowedTables = new Set([
   "repair_services",
   "members",
   "contact_details",
+  "shop_gallery",
 ]);
 
 export async function POST(request: NextRequest) {

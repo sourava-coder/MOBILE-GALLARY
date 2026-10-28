@@ -78,6 +78,15 @@ const resources: ResourceDefinition[] = [
     ],
   },
   {
+    table: "shop_gallery", title: "Shop gallery", singular: "Shop photo",
+    fields: [
+      { key: "page", label: "Show photo on", kind: "select", required: true, options: ["home", "visit"] },
+      { key: "image_url", label: "Landscape shop photo", kind: "image", required: true, hint: "Add one photo at a time. Repeat to build a gallery." },
+      { key: "alt_text", label: "Photo description", required: true },
+      { key: "sort_order", label: "Display order", kind: "number", required: true },
+    ],
+  },
+  {
     table: "privacy_policies", title: "Privacy policy", singular: "Privacy policy", single: true,
     fields: [
       { key: "title", label: "Page title", required: true },

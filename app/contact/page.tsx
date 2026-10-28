@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Visit Mobile Gallary | Contact" };
 
 export default async function ContactPage() {
-  const { settings, contact } = await getPublicData();
+  const { settings, contact, gallery } = await getPublicData();
 
   return (
     <SiteLayout settings={settings} contact={contact}>
@@ -16,7 +16,7 @@ export default async function ContactPage() {
           title="Let’s get your tech sorted."
           description="Have a question about a repair, looking for something specific, or just need a little advice? We’d love to hear from you."
         />
-        <ContactDetailsPanel contact={contact} />
+        <ContactDetailsPanel contact={contact} gallery={gallery.filter((photo) => photo.page === "visit")} />
       </main>
     </SiteLayout>
   );

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, BatteryCharging, Clock3, MapPin, Smartphone, Wrench } from "lucide-react";
-import type { ContactDetails, HomepageSettings, Member, Product, RepairService } from "@/lib/types";
+import type { ContactDetails, HomepageSettings, Member, Product, RepairService, ShopPhoto } from "@/lib/types";
 
 export function PageIntro({
   label,
@@ -125,7 +125,7 @@ export function TeamRoster({ members }: { members: Member[] }) {
   );
 }
 
-export function ContactDetailsPanel({ contact }: { contact: ContactDetails }) {
+export function ContactDetailsPanel({ contact, gallery = [] }: { contact: ContactDetails; gallery?: ShopPhoto[] }) {
   const hasDetails = Boolean(
     contact.address || contact.phone || contact.email || contact.opening_hours ||
     contact.whatsapp || contact.map_url,
@@ -147,12 +147,7 @@ export function ContactDetailsPanel({ contact }: { contact: ContactDetails }) {
         )}
       </div>
       <div className="contact-side">
-        {contact.shop_image_url && (
-          <div className="shop-photo-wrap contact-shop-photo">
-            <img src={contact.shop_image_url} alt={contact.shop_image_alt || "Mobile Gallary shop"} className="shop-photo" loading="lazy" />
-            <span className="photo-caption">Visit us at Mobile Gallary</span>
-          </div>
-        )}
+        {gallery.length > 0 && <div className="shop-gallery contact-shop-gallery">{gallery.map((photo) => <div className="shop-photo-wrap" key={photo.id ?? photo.image_url}><img src={photo.image_url} alt={photo.alt_text} className="shop-photo" loading="lazy" /><span className="photo-caption">Visit us at Mobile Gallary</span></div>)}</div>}
         <div className="contact-details">
           {contact.address && <div><MapPin size={18} /><span><small>Find us</small><strong>{contact.address}</strong></span></div>}
           {contact.phone && <div><Smartphone size={18} /><span><small>Call us</small><a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}>{contact.phone}</a></span></div>}
