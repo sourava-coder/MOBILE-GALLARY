@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import WelcomeSplash from "@/components/welcome-splash";
+import ScrollToTop from "@/components/scroll-to-top";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -24,7 +25,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body><WelcomeSplash />{children}</body>
+      <body><WelcomeSplash /><ScrollToTop />{children}</body>
     </html>
   );
 }
