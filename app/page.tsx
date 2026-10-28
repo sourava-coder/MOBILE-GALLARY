@@ -56,6 +56,19 @@ export default async function HomePage() {
           <div><span className="trust-icon"><ShieldCheck size={19} /></span><span><strong>Honest guidance</strong><small>Real answers, no pressure</small></span></div>
           <div><span className="trust-icon"><Clock3 size={19} /></span><span><strong>Here when you need us</strong><small>Friendly local support</small></span></div>
         </section>
+        {settings.shop_image_url && (
+          <section className="shop-showcase page-width" aria-label="Mobile Gallary shop">
+            <div className="shop-showcase-copy">
+              <p className="section-label">A place for better device care</p>
+              <h2>Step into Mobile Gallary.</h2>
+              <p>Visit us for friendly advice, careful repairs, and a closer look at the devices we recommend.</p>
+            </div>
+            <div className="shop-photo-wrap">
+              <img src={settings.shop_image_url} alt={settings.shop_image_alt || "Mobile Gallary shop"} className="shop-photo" loading="lazy" />
+              <span className="photo-caption">Inside Mobile Gallary</span>
+            </div>
+          </section>
+        )}
 
         <section className="home-links page-width">
           <Link className="home-link-card clay-card" href="/repairs"><span className="trust-icon"><Wrench size={19} /></span><span><strong>Repair services</strong><small>See how we can help</small></span><ArrowUpRight size={18} /></Link>

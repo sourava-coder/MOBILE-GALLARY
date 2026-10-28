@@ -7,6 +7,7 @@ const resourceFields = {
   homepage_settings: [
     "store_name", "tagline", "hero_title", "hero_description", "cta_primary",
     "cta_secondary", "currency_code", "enable_promotions",
+    "shop_image_url", "shop_image_alt",
   ],
   products: [
     "name", "brand", "category", "price", "condition", "description",
@@ -19,6 +20,7 @@ const resourceFields = {
   contact_details: [
     "phone", "email", "address", "whatsapp", "opening_hours", "map_url",
     "instagram_url", "facebook_url",
+    "shop_image_url", "shop_image_alt",
   ],
   privacy_policies: ["title", "content"],
   terms: ["title", "content"],

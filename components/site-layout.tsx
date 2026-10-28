@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import type { ContactDetails, HomepageSettings } from "@/lib/types";
+import MobileNav from "@/components/mobile-nav";
 
 const navigation = [
   { href: "/", label: "Home" },
@@ -30,6 +31,7 @@ export function SiteLayout({
         <nav className="main-nav" aria-label="Main navigation">
           {navigation.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
         </nav>
+        <MobileNav />
         <Link className="button button-dark nav-cta" href="/contact">
           Get in touch <ArrowUpRight size={16} />
         </Link>

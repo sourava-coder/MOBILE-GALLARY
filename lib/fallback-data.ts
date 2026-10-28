@@ -10,6 +10,8 @@ export const fallbackHomepageSettings: HomepageSettings = {
   cta_secondary: "Explore services",
   currency_code: "INR",
   enable_promotions: true,
+  shop_image_url: "",
+  shop_image_alt: "Mobile Gallary shop",
 };
 
 export const fallbackProducts: Product[] = [];
@@ -27,6 +29,8 @@ export const fallbackContactDetails: ContactDetails = {
   map_url: "",
   instagram_url: "",
   facebook_url: "",
+  shop_image_url: "",
+  shop_image_alt: "Mobile Gallary shop",
 };
 
 export const fallbackPrivacyPolicy: LegalPage = {

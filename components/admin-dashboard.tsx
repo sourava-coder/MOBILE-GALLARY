@@ -23,6 +23,8 @@ const resources: ResourceDefinition[] = [
       { key: "cta_secondary", label: "Secondary button label", required: true },
       { key: "currency_code", label: "Price currency", kind: "select", required: true, options: ["INR", "USD", "EUR", "GBP"] },
       { key: "enable_promotions", label: "Show promotional messages", kind: "checkbox" },
+      { key: "shop_image_url", label: "Home shop landscape photo", kind: "image", hint: "Use a landscape image for the premium shop showcase." },
+      { key: "shop_image_alt", label: "Home shop photo description", hint: "Describe the shop photo for accessibility." },
     ],
   },
   {
@@ -71,6 +73,8 @@ const resources: ResourceDefinition[] = [
       { key: "map_url", label: "Map link", kind: "url" },
       { key: "instagram_url", label: "Instagram link", kind: "url" },
       { key: "facebook_url", label: "Facebook link", kind: "url" },
+      { key: "shop_image_url", label: "Visit us shop landscape photo", kind: "image", hint: "Use a landscape image for the visit page." },
+      { key: "shop_image_alt", label: "Shop photo description", hint: "Describe the shop photo for accessibility." },
     ],
   },
   {
@@ -176,7 +180,8 @@ export default function AdminDashboard({
         setSaving(false);
         return;
       }
-      payload.image_url = uploadResult.imageUrl;
+      const imageField = selected.fields.find((field) => field.kind === "image");
+      if (imageField) payload[imageField.key] = uploadResult.imageUrl;
     }
 
     const response = await fetch("/api/admin/content", {

@@ -147,6 +147,12 @@ export function ContactDetailsPanel({ contact }: { contact: ContactDetails }) {
         )}
       </div>
       <div className="contact-side">
+        {contact.shop_image_url && (
+          <div className="shop-photo-wrap contact-shop-photo">
+            <img src={contact.shop_image_url} alt={contact.shop_image_alt || "Mobile Gallary shop"} className="shop-photo" loading="lazy" />
+            <span className="photo-caption">Visit us at Mobile Gallary</span>
+          </div>
+        )}
         <div className="contact-details">
           {contact.address && <div><MapPin size={18} /><span><small>Find us</small><strong>{contact.address}</strong></span></div>}
           {contact.phone && <div><Smartphone size={18} /><span><small>Call us</small><a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}>{contact.phone}</a></span></div>}

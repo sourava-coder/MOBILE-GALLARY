@@ -38,6 +38,8 @@ create table if not exists public.homepage_settings (
 alter table public.homepage_settings
 add column if not exists currency_code text not null default 'INR'
 check (currency_code in ('INR', 'USD', 'EUR', 'GBP'));
+alter table public.homepage_settings add column if not exists shop_image_url text;
+alter table public.homepage_settings add column if not exists shop_image_alt text default 'Mobile Gallary shop';
 
 create table if not exists public.products (
   id uuid primary key default uuid_generate_v4(),
@@ -87,9 +89,13 @@ create table if not exists public.contact_details (
   map_url text,
   instagram_url text,
   facebook_url text,
+  shop_image_url text,
+  shop_image_alt text default 'Mobile Gallary shop',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+alter table public.contact_details add column if not exists shop_image_url text;
+alter table public.contact_details add column if not exists shop_image_alt text default 'Mobile Gallary shop';
 
 create table if not exists public.privacy_policies (
   id uuid primary key default uuid_generate_v4(),

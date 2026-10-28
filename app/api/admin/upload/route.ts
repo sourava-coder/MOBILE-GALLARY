@@ -11,7 +11,13 @@ const mimeExtensions: Record<string, string> = {
   "image/gif": "gif",
 };
 
-const allowedTables = new Set(["products", "repair_services", "members"]);
+const allowedTables = new Set([
+  "homepage_settings",
+  "products",
+  "repair_services",
+  "members",
+  "contact_details",
+]);
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== new URL(request.url).origin) {
