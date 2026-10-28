@@ -16,6 +16,7 @@ A mobile phone retail and repair storefront built with Next.js, Supabase Postgre
 
 1. Create a Supabase project.
 2. In **SQL Editor**, run the complete `supabase/schema.sql` script. It also adds safe, idempotent demo content (without stock quantities) when the tables are empty; replace or delete that content from `/admin` for the real store.
+3. Add the shop address in **Admin → Contact details**. The contact page automatically renders a lazy-loaded Google Map from that address; add a Google Maps URL as well if you want the “Open map” directions link.
 3. Copy the project URL, publishable/anon key, and service-role key from **Project Settings → API**.
 4. Copy `.env.example` to `.env.local` and configure the Supabase keys, desired 4-digit PIN, and a random signing secret:
 

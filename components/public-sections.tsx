@@ -130,6 +130,9 @@ export function ContactDetailsPanel({ contact }: { contact: ContactDetails }) {
     contact.address || contact.phone || contact.email || contact.opening_hours ||
     contact.whatsapp || contact.map_url,
   );
+  const mapEmbedUrl = contact.address
+    ? `https://www.google.com/maps?q=${encodeURIComponent(contact.address)}&output=embed`
+    : contact.map_url?.includes("google.") ? contact.map_url : null;
 
   return (
     <section className="contact-section contact-page-panel">
@@ -143,14 +146,26 @@ export function ContactDetailsPanel({ contact }: { contact: ContactDetails }) {
           </a>
         )}
       </div>
-      <div className="contact-details">
-        {contact.address && <div><MapPin size={18} /><span><small>Find us</small><strong>{contact.address}</strong></span></div>}
-        {contact.phone && <div><Smartphone size={18} /><span><small>Call us</small><a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}>{contact.phone}</a></span></div>}
-        {contact.email && <div><ArrowUpRight size={18} /><span><small>Email</small><a href={`mailto:${contact.email}`}>{contact.email}</a></span></div>}
-        {contact.opening_hours && <div><Clock3 size={18} /><span><small>Opening hours</small><strong>{contact.opening_hours}</strong></span></div>}
-        {contact.whatsapp && <div><Smartphone size={18} /><span><small>WhatsApp</small><a href={`https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`}>{contact.whatsapp}</a></span></div>}
-        {contact.map_url && <div><MapPin size={18} /><span><small>Directions</small><a href={contact.map_url} target="_blank" rel="noreferrer">Open map</a></span></div>}
-        {!hasDetails && <p className="contact-empty">Contact information is being updated. Please check back soon.</p>}
+      <div className="contact-side">
+        <div className="contact-details">
+          {contact.address && <div><MapPin size={18} /><span><small>Find us</small><strong>{contact.address}</strong></span></div>}
+          {contact.phone && <div><Smartphone size={18} /><span><small>Call us</small><a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}>{contact.phone}</a></span></div>}
+          {contact.email && <div><ArrowUpRight size={18} /><span><small>Email</small><a href={`mailto:${contact.email}`}>{contact.email}</a></span></div>}
+          {contact.opening_hours && <div><Clock3 size={18} /><span><small>Opening hours</small><strong>{contact.opening_hours}</strong></span></div>}
+          {contact.whatsapp && <div><Smartphone size={18} /><span><small>WhatsApp</small><a href={`https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`}>{contact.whatsapp}</a></span></div>}
+          {contact.map_url && <div><MapPin size={18} /><span><small>Directions</small><a href={contact.map_url} target="_blank" rel="noreferrer">Open map</a></span></div>}
+          {!hasDetails && <p className="contact-empty">Contact information is being updated. Please check back soon.</p>}
+        </div>
+        {mapEmbedUrl && (
+          <div className="map-frame">
+            <iframe
+              title="Mobile Gallary location on Google Maps"
+              src={mapEmbedUrl}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        )}
       </div>
     </section>
   );
