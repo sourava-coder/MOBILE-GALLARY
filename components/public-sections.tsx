@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, BatteryCharging, Clock3, MapPin, Smartphone, Wrench } from "lucide-react";
 import type { ContactDetails, HomepageSettings, Member, Product, RepairService, ShopPhoto } from "@/lib/types";
 import ShopGallerySlider from "@/components/shop-gallery-slider";
+import { price } from "@/lib/formatters";
 
 export function PageIntro({
   label,
@@ -19,14 +20,6 @@ export function PageIntro({
       <p>{description}</p>
     </section>
   );
-}
-
-function price(value: number, currency: string) {
-  return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 2,
-  }).format(value);
 }
 
 function availabilityLabel(status?: Product["availability"]) {
@@ -90,7 +83,7 @@ export function ProductCatalog({
   return products.length ? (
     <div className="product-grid">
       {products.map((product) => (
-        <article className="product-card clay-card" key={product.id ?? product.name}>
+        <Link className="product-card clay-card" href={product.id ? `/devices/${product.id}` : "/devices"} key={product.id ?? product.name}>
           {product.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img className="product-image" src={product.image_url} alt={product.name} />
@@ -98,16 +91,18 @@ export function ProductCatalog({
           <div className="product-content">
             <div className="product-topline">
               <span>{product.brand || product.category || "Mobile"}{product.featured && <span className="featured-tag">Featured</span>}</span>
-              {product.price > 0 && <strong>{price(product.price, settings.currency_code)}</strong>}
+              {product.price > 0 && <span className="price-group"><strong>{price(product.price, settings.currency_code)}</strong>{product.original_price && product.original_price > product.price && <del>{price(product.original_price, settings.currency_code)}</del>}</span>}
             </div>
             <h3>{product.name}</h3>
             <p>{product.description}</p>
+            {product.original_price && product.original_price > product.price && <span className="discount-badge">{Math.round((1 - product.price / product.original_price) * 100)}% off</span>}
+            {product.discount_offer && <span className="offer-label">{product.discount_offer}</span>}
             <span className={`availability-badge availability-${product.availability ?? "available"}`}>
               {availabilityLabel(product.availability)}
             </span>
             {product.condition && <span className="condition-tag">{product.condition}</span>}
           </div>
-        </article>
+        </Link>
       ))}
     </div>
   ) : (

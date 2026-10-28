@@ -11,7 +11,10 @@ const resourceFields = {
     "shop_image_url", "shop_image_alt",
   ],
   products: [
-    "name", "brand", "category", "price", "condition", "description",
+    "name", "brand", "category", "price", "original_price", "discount_offer",
+    "condition", "model_number", "storage", "ram", "color", "warranty", "specifications", "description",
+    "highlights", "display", "processor", "rear_camera", "front_camera", "battery",
+    "operating_system", "connectivity", "dimensions_weight", "box_contents", "return_policy",
     "image_url", "availability", "featured",
   ],
   repair_services: [
@@ -61,7 +64,7 @@ function validateValues(table: AdminTable, input: unknown) {
       continue;
     }
 
-    if (key === "price" || key === "sort_order") {
+    if (key === "price" || key === "original_price" || key === "sort_order") {
       if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
         return { values: null, error: `${key} must be a non-negative number.` };
       }

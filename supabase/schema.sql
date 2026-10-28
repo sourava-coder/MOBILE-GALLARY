@@ -47,7 +47,26 @@ create table if not exists public.products (
   brand text,
   category text,
   price numeric(10,2) not null default 0 check (price >= 0),
+  original_price numeric(10,2) check (original_price is null or original_price >= 0),
+  discount_offer text,
   condition text,
+  model_number text,
+  storage text,
+  ram text,
+  color text,
+  warranty text,
+  highlights text,
+  display text,
+  processor text,
+  rear_camera text,
+  front_camera text,
+  battery text,
+  operating_system text,
+  connectivity text,
+  dimensions_weight text,
+  box_contents text,
+  return_policy text,
+  specifications text,
   description text,
   image_url text,
   availability text not null default 'available' check (availability in ('available', 'unavailable', 'coming_soon')),
@@ -56,6 +75,25 @@ create table if not exists public.products (
   updated_at timestamptz not null default now()
 );
 alter table public.products add column if not exists availability text not null default 'available';
+alter table public.products add column if not exists original_price numeric(10,2);
+alter table public.products add column if not exists discount_offer text;
+alter table public.products add column if not exists model_number text;
+alter table public.products add column if not exists storage text;
+alter table public.products add column if not exists ram text;
+alter table public.products add column if not exists color text;
+alter table public.products add column if not exists warranty text;
+alter table public.products add column if not exists highlights text;
+alter table public.products add column if not exists display text;
+alter table public.products add column if not exists processor text;
+alter table public.products add column if not exists rear_camera text;
+alter table public.products add column if not exists front_camera text;
+alter table public.products add column if not exists battery text;
+alter table public.products add column if not exists operating_system text;
+alter table public.products add column if not exists connectivity text;
+alter table public.products add column if not exists dimensions_weight text;
+alter table public.products add column if not exists box_contents text;
+alter table public.products add column if not exists return_policy text;
+alter table public.products add column if not exists specifications text;
 alter table public.products drop constraint if exists products_availability_check;
 alter table public.products add constraint products_availability_check check (availability in ('available', 'unavailable', 'coming_soon'));
 

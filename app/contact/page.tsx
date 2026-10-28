@@ -4,8 +4,9 @@ import { getPublicData } from "@/lib/public-data";
 
 export const metadata = { title: "Visit Mobile Gallary | Contact" };
 
-export default async function ContactPage() {
+export default async function ContactPage({ searchParams }: { searchParams: Promise<{ device?: string }> }) {
   const { settings, contact, gallery } = await getPublicData();
+  const { device } = await searchParams;
   const visitPhotos = [
     ...(contact.shop_image_url ? [{
       id: "legacy-visit-shop-photo",
@@ -23,7 +24,7 @@ export default async function ContactPage() {
         <PageIntro
           label="Drop us a line or drop by"
           title="Let’s get your tech sorted."
-          description="Have a question about a repair, looking for something specific, or just need a little advice? We’d love to hear from you."
+          description={device ? `You are asking about ${device}. Contact us for current availability, pricing, and complete details.` : "Have a question about a repair, looking for something specific, or just need a little advice? We’d love to hear from you."}
         />
         <ContactDetailsPanel contact={contact} gallery={visitPhotos} />
       </main>
