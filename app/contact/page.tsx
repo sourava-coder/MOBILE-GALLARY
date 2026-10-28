@@ -2,7 +2,6 @@ import { SiteLayout } from "@/components/site-layout";
 import { ContactDetailsPanel, PageIntro } from "@/components/public-sections";
 import { getPublicData } from "@/lib/public-data";
 
-export const dynamic = "force-dynamic";
 export const metadata = { title: "Visit Mobile Gallary | Contact" };
 
 export default async function ContactPage() {

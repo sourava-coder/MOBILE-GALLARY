@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import WelcomeSplash from "@/components/welcome-splash";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -11,6 +12,11 @@ export const metadata: Metadata = {
   title: "Mobile Gallary | Mobile, Repair, Care",
   description:
     "Discover mobile devices, accessories, and expert phone repairs at Mobile Gallary.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -18,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>{children}</body>
+      <body><WelcomeSplash />{children}</body>
     </html>
   );
 }

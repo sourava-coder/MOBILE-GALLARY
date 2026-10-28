@@ -50,10 +50,14 @@ create table if not exists public.products (
   condition text,
   description text,
   image_url text,
+  availability text not null default 'available' check (availability in ('available', 'unavailable', 'coming_soon')),
   featured boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+alter table public.products add column if not exists availability text not null default 'available';
+alter table public.products drop constraint if exists products_availability_check;
+alter table public.products add constraint products_availability_check check (availability in ('available', 'unavailable', 'coming_soon'));
 
 create table if not exists public.repair_services (
   id uuid primary key default uuid_generate_v4(),

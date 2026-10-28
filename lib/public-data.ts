@@ -6,6 +6,8 @@ import {
   fallbackMembers,
   fallbackProducts,
   fallbackServices,
+  fallbackPrivacyPolicy,
+  fallbackTerms,
 } from "@/lib/fallback-data";
 import type {
   ContactDetails,
@@ -14,6 +16,7 @@ import type {
   Product,
   RepairService,
   ShopPhoto,
+  LegalPage,
 } from "@/lib/types";
 
 const getCachedPublicData = unstable_cache(
@@ -34,8 +37,10 @@ const getCachedPublicData = unstable_cache(
       supabase.from("members").select("*").order("created_at", { ascending: false }),
       supabase.from("contact_details").select("*").limit(1).maybeSingle(),
       supabase.from("shop_gallery").select("*").order("sort_order", { ascending: true }),
+      supabase.from("privacy_policies").select("*").limit(1).maybeSingle(),
+      supabase.from("terms").select("*").limit(1).maybeSingle(),
     ]);
-    const [settings, products, services, members, contact, gallery] = results;
+    const [settings, products, services, members, contact, gallery, privacy, terms] = results;
     const failedQuery = results.find((result) => result.error);
     if (failedQuery?.error) {
       throw new Error(`Could not load storefront content from Supabase: ${failedQuery.error.message}`);
@@ -48,10 +53,12 @@ const getCachedPublicData = unstable_cache(
       members: (members.data ?? fallbackMembers) as Member[],
       contact: (contact.data ?? fallbackContactDetails) as ContactDetails,
       gallery: (gallery.data ?? []) as ShopPhoto[],
+      privacy: (privacy.data ?? fallbackPrivacyPolicy) as LegalPage,
+      terms: (terms.data ?? fallbackTerms) as LegalPage,
     };
   },
   ["mobile-gallary-public-data"],
-  { revalidate: 30 },
+  { revalidate: 10 },
 );
 
 export async function getPublicData() {
@@ -64,6 +71,8 @@ export async function getPublicData() {
       members: fallbackMembers,
       contact: fallbackContactDetails,
       gallery: [],
+      privacy: fallbackPrivacyPolicy,
+      terms: fallbackTerms,
     };
   }
   return cachedData;

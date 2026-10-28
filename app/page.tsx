@@ -4,8 +4,6 @@ import { SiteLayout } from "@/components/site-layout";
 import { VisitCta } from "@/components/public-sections";
 import { getPublicData } from "@/lib/public-data";
 
-export const dynamic = "force-dynamic";
-
 export default async function HomePage() {
   const { settings, contact, gallery } = await getPublicData();
   const homePhotos = gallery.filter((photo) => photo.page === "home");

@@ -34,6 +34,7 @@ const resources: ResourceDefinition[] = [
       { key: "brand", label: "Brand" },
       { key: "category", label: "Category" },
       { key: "price", label: "Price", kind: "number", required: true },
+      { key: "availability", label: "Availability", kind: "select", required: true, options: ["available", "unavailable", "coming_soon"] },
       { key: "condition", label: "Condition" },
       { key: "description", label: "Description", kind: "textarea" },
       { key: "image_url", label: "Product image", kind: "image" },

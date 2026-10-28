@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getAdminRequestContext } from "@/lib/admin-server";
 
 export const runtime = "nodejs";
@@ -11,7 +12,7 @@ const resourceFields = {
   ],
   products: [
     "name", "brand", "category", "price", "condition", "description",
-    "image_url", "featured",
+    "image_url", "availability", "featured",
   ],
   repair_services: [
     "name", "price", "duration", "description", "featured", "image_url", "icon",
@@ -35,6 +36,10 @@ function isAdminTable(value: string | null): value is AdminTable {
 
 function isSameOrigin(request: NextRequest) {
   return request.headers.get("origin") === new URL(request.url).origin;
+}
+
+function refreshPublicPages() {
+  revalidatePath("/", "layout");
 }
 
 function validateValues(table: AdminTable, input: unknown) {
@@ -86,6 +91,9 @@ function validateValues(table: AdminTable, input: unknown) {
   }
   if (table === "shop_gallery" && !["home", "visit"].includes(String(cleaned.page))) {
     return { values: null, error: "Choose Home or Visit us for this photo." };
+  }
+  if (table === "products" && !["available", "unavailable", "coming_soon"].includes(String(cleaned.availability))) {
+    return { values: null, error: "Choose a valid product availability status." };
   }
 
   for (const requiredKey of table === "homepage_settings"
@@ -151,6 +159,7 @@ export async function POST(request: NextRequest) {
     if (current) {
       const { error: updateError } = await client.from(table).update(values).eq("id", current.id);
       if (updateError) return NextResponse.json({ error: "Could not save settings." }, { status: 500 });
+      refreshPublicPages();
       return NextResponse.json({ success: true });
     }
   }
@@ -160,6 +169,7 @@ export async function POST(request: NextRequest) {
     console.error("Could not create admin content.", insertError);
     return NextResponse.json({ error: "Could not save content." }, { status: 500 });
   }
+  refreshPublicPages();
   return NextResponse.json({ success: true }, { status: 201 });
 }
 
@@ -182,6 +192,7 @@ export async function PATCH(request: NextRequest) {
     console.error("Could not update admin content.", updateError);
     return NextResponse.json({ error: "Could not update content." }, { status: 500 });
   }
+  refreshPublicPages();
   return NextResponse.json({ success: true });
 }
 
@@ -199,5 +210,6 @@ export async function DELETE(request: NextRequest) {
     console.error("Could not delete admin content.", deleteError);
     return NextResponse.json({ error: "Could not delete content." }, { status: 500 });
   }
+  refreshPublicPages();
   return NextResponse.json({ success: true });
 }

@@ -28,6 +28,12 @@ function price(value: number, currency: string) {
   }).format(value);
 }
 
+function availabilityLabel(status?: Product["availability"]) {
+  if (status === "unavailable") return "Not available";
+  if (status === "coming_soon") return "Coming soon";
+  return "Available";
+}
+
 function serviceIcon(icon?: string) {
   switch (icon?.trim().toLowerCase()) {
     case "phone":
@@ -95,6 +101,9 @@ export function ProductCatalog({
             </div>
             <h3>{product.name}</h3>
             <p>{product.description}</p>
+            <span className={`availability-badge availability-${product.availability ?? "available"}`}>
+              {availabilityLabel(product.availability)}
+            </span>
             {product.condition && <span className="condition-tag">{product.condition}</span>}
           </div>
         </article>

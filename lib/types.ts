@@ -23,6 +23,7 @@ export type Product = {
   condition?: string;
   description?: string;
   image_url?: string;
+  availability?: "available" | "unavailable" | "coming_soon";
   featured?: boolean;
   created_at?: string;
   updated_at?: string;

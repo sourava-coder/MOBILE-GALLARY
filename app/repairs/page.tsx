@@ -2,7 +2,6 @@ import { SiteLayout } from "@/components/site-layout";
 import { PageIntro, RepairServices, VisitCta } from "@/components/public-sections";
 import { getPublicData } from "@/lib/public-data";
 
-export const dynamic = "force-dynamic";
 export const metadata = { title: "Phone repairs | Mobile Gallary" };
 
 export default async function RepairsPage() {
