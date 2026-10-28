@@ -2,11 +2,21 @@ import Link from "next/link";
 import { ArrowUpRight, BatteryCharging, Clock3, ShieldCheck, Smartphone, Wrench } from "lucide-react";
 import { SiteLayout } from "@/components/site-layout";
 import { VisitCta } from "@/components/public-sections";
+import ShopGallerySlider from "@/components/shop-gallery-slider";
 import { getPublicData } from "@/lib/public-data";
 
 export default async function HomePage() {
   const { settings, contact, gallery } = await getPublicData();
-  const homePhotos = gallery.filter((photo) => photo.page === "home");
+  const homePhotos = [
+    ...(settings.shop_image_url ? [{
+      id: "legacy-home-shop-photo",
+      page: "home" as const,
+      image_url: settings.shop_image_url,
+      alt_text: settings.shop_image_alt || "Inside Mobile Gallary",
+      sort_order: -1,
+    }] : []),
+    ...gallery.filter((photo) => photo.page === "home"),
+  ].filter((photo, index, photos) => photos.findIndex((item) => item.image_url === photo.image_url) === index);
 
   return (
     <SiteLayout settings={settings} contact={contact}>
@@ -62,9 +72,7 @@ export default async function HomePage() {
               <h2>Step into Mobile Gallary.</h2>
               <p>Visit us for friendly advice, careful repairs, and a closer look at the devices we recommend.</p>
             </div>
-            <div className="shop-gallery">
-              {homePhotos.map((photo) => <div className="shop-photo-wrap" key={photo.id ?? photo.image_url}><img src={photo.image_url} alt={photo.alt_text} className="shop-photo" loading="lazy" /><span className="photo-caption">Inside Mobile Gallary</span></div>)}
-            </div>
+            <ShopGallerySlider photos={homePhotos} caption="Inside Mobile Gallary" />
           </section>
         )}
 

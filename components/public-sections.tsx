@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, BatteryCharging, Clock3, MapPin, Smartphone, Wrench } from "lucide-react";
 import type { ContactDetails, HomepageSettings, Member, Product, RepairService, ShopPhoto } from "@/lib/types";
+import ShopGallerySlider from "@/components/shop-gallery-slider";
 
 export function PageIntro({
   label,
@@ -156,7 +157,7 @@ export function ContactDetailsPanel({ contact, gallery = [] }: { contact: Contac
         )}
       </div>
       <div className="contact-side">
-        {gallery.length > 0 && <div className="shop-gallery contact-shop-gallery">{gallery.map((photo) => <div className="shop-photo-wrap" key={photo.id ?? photo.image_url}><img src={photo.image_url} alt={photo.alt_text} className="shop-photo" loading="lazy" /><span className="photo-caption">Visit us at Mobile Gallary</span></div>)}</div>}
+        {gallery.length > 0 && <div className="contact-shop-gallery"><ShopGallerySlider photos={gallery} caption="Visit us at Mobile Gallary" /></div>}
         <div className="contact-details">
           {contact.address && <div><MapPin size={18} /><span><small>Find us</small><strong>{contact.address}</strong></span></div>}
           {contact.phone && <div><Smartphone size={18} /><span><small>Call us</small><a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}>{contact.phone}</a></span></div>}
