@@ -10,6 +10,7 @@ export const fallbackHomepageSettings: HomepageSettings = {
   cta_secondary: "Explore services",
   currency_code: "INR",
   enable_promotions: true,
+  hero_video_url: "",
   shop_image_url: "",
   shop_image_alt: "Mobile Gallary shop",
 };

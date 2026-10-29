@@ -135,9 +135,22 @@ export function ContactDetailsPanel({ contact, gallery = [] }: { contact: Contac
     contact.address || contact.phone || contact.email || contact.opening_hours ||
     contact.whatsapp || contact.map_url,
   );
-  const mapEmbedUrl = contact.address
-    ? `https://www.google.com/maps?q=${encodeURIComponent(contact.address)}&output=embed`
-    : contact.map_url?.includes("google.") ? contact.map_url : null;
+  const mapEmbedUrl = (() => {
+    if (contact.map_url) {
+      try {
+        const url = new URL(contact.map_url);
+        if (url.hostname.includes("google.") || url.hostname === "maps.google.com" || url.hostname === "maps.app.goo.gl") {
+          url.searchParams.set("output", "embed");
+          return url.toString();
+        }
+      } catch {
+        // Fall back to the saved address when an admin link is malformed.
+      }
+    }
+    return contact.address
+      ? `https://www.google.com/maps?q=${encodeURIComponent(contact.address)}&output=embed`
+      : null;
+  })();
 
   return (
     <section className="contact-section contact-page-panel">

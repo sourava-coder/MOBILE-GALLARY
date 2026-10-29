@@ -207,7 +207,31 @@ button { cursor: pointer; }
 .art-spark { position: absolute; color: var(--coral); }
 .spark-one { top: 17%; left: 10%; font-size: 29px; }
 .spark-two { bottom: 21%; right: 8%; font-size: 23px; color: #748e6b; }
-.hero-bottom { position: absolute; left: 68px; right: 68px; bottom: 23px; display: flex; justify-content: space-between; padding-top: 13px; border-top: 1px solid rgba(41,62,54,.11); color: #79857e; font-size: 10px; letter-spacing: .04em; }
+.hero-bottom { position: absolute; left: 68px; right: 68px; bottom: 23px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 13px; border-top: 1px solid rgba(41,62,54,.11); color: #79857e; font-size: 10px; letter-spacing: .04em; }
+.welcome-banner { min-height: 650px; position: relative; display: grid; place-items: center; overflow: hidden; margin-top: 0; color: white; background: #160604; }
+.welcome-banner-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.82) contrast(.92); }
+.welcome-banner-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: saturate(.72) contrast(.94); transform: scale(1.08); transition: opacity 1.2s ease, transform 7s ease; }
+.welcome-banner-image.active { opacity: .68; transform: scale(1); }
+.welcome-banner-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,18,23,.22), rgba(10,12,16,.42) 65%, rgba(10,12,16,.68)); }
+.welcome-banner-content { position: relative; z-index: 1; width: min(940px, calc(100% - 40px)); padding-bottom: 35px; text-align: center; animation: welcome-banner-enter .75s ease both; }
+.welcome-banner-badge { display: inline-flex; align-items: center; gap: 9px; padding: 11px 22px; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; color: rgba(255,255,255,.9); background: rgba(255,255,255,.12); font-size: 10px; font-weight: 800; letter-spacing: .3em; backdrop-filter: blur(12px); }
+.welcome-banner-badge svg { color: #e8d2b5; }
+.welcome-banner h1 { margin: 25px 0 19px; font-family: Arial, Helvetica, sans-serif; font-size: clamp(42px, 8vw, 108px); font-weight: 900; letter-spacing: -.07em; line-height: .92; }
+.welcome-banner h1 span { display: inline; color: #e8d2b5; }
+.welcome-banner p { max-width: 650px; margin: 0 auto; color: rgba(255,255,255,.76); font-size: clamp(13px, 1.5vw, 17px); line-height: 1.7; }
+.welcome-banner-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 32px; }
+.welcome-banner-primary, .welcome-banner-secondary { display: inline-flex; align-items: center; gap: 12px; min-height: 58px; padding: 0 28px; border-radius: 13px; font-size: 10px; font-weight: 800; letter-spacing: .2em; transition: transform .2s ease, background .2s ease; }
+.welcome-banner-primary { color: #fff; background: #8d5a45; box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+.welcome-banner-secondary { border: 1px solid rgba(255,255,255,.25); color: #fff; background: rgba(255,255,255,.08); }
+.welcome-banner-primary:hover, .welcome-banner-secondary:hover { transform: translateY(-3px); }
+.welcome-banner-stats { position: absolute; z-index: 2; left: 34px; bottom: 28px; display: flex; gap: clamp(26px, 5vw, 75px); }
+.welcome-banner-stats div { display: grid; gap: 4px; }
+.welcome-banner-stats strong { color: #fff; font-size: 26px; letter-spacing: -.04em; }
+.welcome-banner-stats span { color: rgba(255,255,255,.55); font-size: 9px; letter-spacing: .16em; }
+.welcome-banner-dots { position: absolute; z-index: 2; right: 34px; bottom: 39px; display: flex; gap: 8px; }
+.welcome-banner-dots button { width: 48px; height: 4px; padding: 0; border: 0; border-radius: 99px; background: rgba(255,255,255,.3); transition: width .3s ease, background .3s ease; }
+.welcome-banner-dots button.active { width: 68px; background: #e8d2b5; }
+@keyframes welcome-banner-enter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 .promo-note { display: flex; align-items: center; justify-content: center; gap: 8px; padding-top: 18px; color: #698166; font-size: 11px; }
 .promo-note span { color: var(--coral); }
 
@@ -225,6 +249,8 @@ button { cursor: pointer; }
 .home-link-card strong { font-size: 12px; }
 .home-link-card small { margin-top: 5px; color: var(--muted); font-size: 10px; }
 .home-link-card > svg { color: #748a71; }
+.scroll-reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+.scroll-reveal.is-visible { opacity: 1; transform: translateY(0); }
 .visit-cta { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 74px; margin-bottom: 65px; padding: 26px 30px; border-radius: 22px; }
 .visit-cta .section-label { margin-bottom: 7px; }
 .visit-cta h2 { margin: 0; font-family: Georgia,serif; font-size: 26px; font-weight: 500; letter-spacing: -.03em; }
@@ -327,6 +353,7 @@ button { cursor: pointer; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .scroll-reveal { opacity: 1; transform: none; }
 }
 @media (max-width: 430px) {
   .welcome-logo-frame { width: 108px; height: 108px; }
@@ -547,6 +574,21 @@ button { cursor: pointer; }
   .brand { max-width: calc(100% - 96px); }
   .brand strong, .brand small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hero { padding-inline: 18px; }
+  .welcome-banner { min-height: 640px; }
+  .welcome-banner-image, .welcome-banner-video { object-fit: contain; object-position: center center; background: #160604; }
+  .welcome-banner-image.active { transform: scale(1); }
+  .welcome-banner-content { width: calc(100% - 28px); padding-bottom: 20px; }
+  .welcome-banner-badge { padding: 9px 13px; font-size: 8px; letter-spacing: .18em; }
+  .welcome-banner h1 { margin-top: 21px; font-size: clamp(38px, 13vw, 58px); }
+  .welcome-banner p { font-size: 12px; }
+  .welcome-banner-actions { gap: 9px; }
+  .welcome-banner-primary, .welcome-banner-secondary { width: 100%; justify-content: center; min-height: 50px; padding-inline: 16px; }
+  .welcome-banner-stats { left: 18px; right: 18px; bottom: 28px; justify-content: space-between; gap: 8px; }
+  .welcome-banner-stats strong { font-size: 19px; }
+  .welcome-banner-stats span { font-size: 7px; letter-spacing: .08em; }
+  .welcome-banner-dots { right: 18px; bottom: 10px; }
+  .welcome-banner-dots button { width: 25px; }
+  .welcome-banner-dots button.active { width: 40px; }
   .hero h1 { font-size: clamp(36px, 12vw, 48px); }
   .hero-description { font-size: 12px; }
   .hero-actions .button { width: 100%; }

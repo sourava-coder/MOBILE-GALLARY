@@ -8,6 +8,7 @@ export type HomepageSettings = {
   cta_secondary: string;
   currency_code: string;
   enable_promotions: boolean;
+  hero_video_url?: string;
   shop_image_url?: string;
   shop_image_alt?: string;
   created_at?: string;

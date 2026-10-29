@@ -8,6 +8,7 @@ const resourceFields = {
   homepage_settings: [
     "store_name", "tagline", "hero_title", "hero_description", "cta_primary",
     "cta_secondary", "currency_code", "enable_promotions",
+    "hero_video_url",
     "shop_image_url", "shop_image_alt",
   ],
   products: [

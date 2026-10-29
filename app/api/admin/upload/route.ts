@@ -9,9 +9,12 @@ const mimeExtensions: Record<string, string> = {
   "image/png": "png",
   "image/webp": "webp",
   "image/gif": "gif",
+  "video/mp4": "mp4",
+  "video/webm": "webm",
 };
 
 const allowedTables = new Set([
+  "homepage_settings",
   "homepage_settings",
   "products",
   "repair_services",
@@ -25,8 +28,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Request could not be verified." }, { status: 403 });
   }
   const contentLength = Number(request.headers.get("content-length"));
-  if (Number.isFinite(contentLength) && contentLength > 5 * 1024 * 1024 + 128 * 1024) {
-    return NextResponse.json({ error: "Image must be no larger than 5 MB." }, { status: 413 });
+  if (Number.isFinite(contentLength) && contentLength > 50 * 1024 * 1024 + 128 * 1024) {
+    return NextResponse.json({ error: "Video must be no larger than 50 MB." }, { status: 413 });
   }
 
   const { client, error } = await getAdminRequestContext();
@@ -36,10 +39,15 @@ export async function POST(request: NextRequest) {
   const file = formData.get("file");
   const table = formData.get("table");
   if (!(file instanceof File) || typeof table !== "string" || !allowedTables.has(table)) {
-    return NextResponse.json({ error: "Choose a valid image and content type." }, { status: 400 });
+    return NextResponse.json({ error: "Choose a valid media file and content type." }, { status: 400 });
   }
-  if (!(file.type in mimeExtensions) || file.size === 0 || file.size > 5 * 1024 * 1024) {
-    return NextResponse.json({ error: "Image must be JPEG, PNG, WebP, or GIF and no larger than 5 MB." }, { status: 400 });
+  const isVideo = file.type === "video/mp4" || file.type === "video/webm";
+  if (isVideo && table !== "homepage_settings") {
+    return NextResponse.json({ error: "Video uploads are only supported for homepage settings." }, { status: 400 });
+  }
+  const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+  if (!(file.type in mimeExtensions) || file.size === 0 || file.size > maxSize) {
+    return NextResponse.json({ error: isVideo ? "Video must be MP4 or WebM and no larger than 50 MB." : "Image must be JPEG, PNG, WebP, or GIF and no larger than 5 MB." }, { status: 400 });
   }
 
   const objectName = `${table}/${randomUUID()}.${mimeExtensions[file.type]}`;
@@ -51,10 +59,10 @@ export async function POST(request: NextRequest) {
       contentType: file.type,
     });
   if (uploadError) {
-    console.error("Could not upload admin image.", uploadError);
-    return NextResponse.json({ error: "Image upload failed." }, { status: 500 });
+    console.error("Could not upload admin media.", uploadError);
+    return NextResponse.json({ error: "Media upload failed." }, { status: 500 });
   }
 
   const { data } = client.storage.from("shop-assets").getPublicUrl(objectName);
-  return NextResponse.json({ imageUrl: data.publicUrl }, { status: 201 });
+  return NextResponse.json({ imageUrl: data.publicUrl, mediaUrl: data.publicUrl }, { status: 201 });
 }

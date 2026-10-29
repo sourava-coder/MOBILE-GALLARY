@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { ImagePlus, LogOut, Plus, Save, Trash2, X } from "lucide-react";
 import type { AdminRecord, AdminResource } from "@/lib/types";
 
-type FieldKind = "text" | "textarea" | "number" | "email" | "tel" | "url" | "select" | "checkbox" | "image";
+type FieldKind = "text" | "textarea" | "number" | "email" | "tel" | "url" | "select" | "checkbox" | "image" | "video";
 type FieldDefinition = { key: string; label: string; kind?: FieldKind; required?: boolean; hint?: string; options?: string[] };
 type ResourceDefinition = { table: AdminResource; title: string; singular: string; fields: FieldDefinition[]; single?: boolean };
 
@@ -23,6 +23,7 @@ const resources: ResourceDefinition[] = [
       { key: "cta_secondary", label: "Secondary button label", required: true },
       { key: "currency_code", label: "Price currency", kind: "select", required: true, options: ["INR", "USD", "EUR", "GBP"] },
       { key: "enable_promotions", label: "Show promotional messages", kind: "checkbox" },
+      { key: "hero_video_url", label: "Hero background video", kind: "video", hint: "Optional MP4 or WebM file. It will play muted, automatically, and loop." },
       { key: "shop_image_url", label: "Home shop landscape photo", kind: "image", hint: "Use a landscape image for the premium shop showcase." },
       { key: "shop_image_alt", label: "Home shop photo description", hint: "Describe the shop photo for accessibility." },
     ],
@@ -203,14 +204,14 @@ export default function AdminDashboard({
       formData.set("file", imageFile);
       formData.set("table", activeTable);
       const uploadResponse = await fetch("/api/admin/upload", { method: "POST", body: formData });
-      const uploadResult = await uploadResponse.json() as { imageUrl?: string; error?: string };
-      if (!uploadResponse.ok || !uploadResult.imageUrl) {
-        setError(`Image upload failed: ${uploadResult.error ?? "Request failed."}`);
+      const uploadResult = await uploadResponse.json() as { imageUrl?: string; mediaUrl?: string; error?: string };
+      if (!uploadResponse.ok || !(uploadResult.mediaUrl ?? uploadResult.imageUrl)) {
+        setError(`Media upload failed: ${uploadResult.error ?? "Request failed."}`);
         setSaving(false);
         return;
       }
-      const imageField = selected.fields.find((field) => field.kind === "image");
-      if (imageField) payload[imageField.key] = uploadResult.imageUrl;
+      const mediaField = selected.fields.find((field) => field.kind === "image" || field.kind === "video");
+      if (mediaField) payload[mediaField.key] = uploadResult.mediaUrl ?? uploadResult.imageUrl ?? null;
     }
 
     const response = await fetch("/api/admin/content", {
@@ -262,13 +263,16 @@ export default function AdminDashboard({
       setImageFile(null);
       return;
     }
-    if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
-      setError("Choose a JPEG, PNG, WebP, or GIF image.");
+    const isVideo = selected.fields.some((field) => field.kind === "video");
+    const allowedTypes = isVideo ? ["video/mp4", "video/webm"] : ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      setError(isVideo ? "Choose an MP4 or WebM video." : "Choose a JPEG, PNG, WebP, or GIF image.");
       event.target.value = "";
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Images must be 5 MB or smaller.");
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setError(isVideo ? "Videos must be 50 MB or smaller." : "Images must be 5 MB or smaller.");
       event.target.value = "";
       return;
     }
@@ -343,10 +347,10 @@ export default function AdminDashboard({
                         <select required={field.required} value={String(values[field.key] ?? "")} onChange={(event) => setValues((old) => ({ ...old, [field.key]: event.target.value }))}>
                           {(field.options ?? []).map((option) => <option key={option} value={option}>{option}</option>)}
                         </select>
-                      ) : field.kind === "image" ? (
+                      ) : field.kind === "image" || field.kind === "video" ? (
                         <span className="upload-field">
-                          <span><ImagePlus size={17} /> {imageFile?.name ?? (values[field.key] ? "Replace current image" : "Choose image")}</span>
-                          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={chooseImage} />
+                          <span><ImagePlus size={17} /> {imageFile?.name ?? (values[field.key] ? `Replace current ${field.kind}` : `Choose ${field.kind}`)}</span>
+                          <input type="file" accept={field.kind === "video" ? "video/mp4,video/webm" : "image/jpeg,image/png,image/webp,image/gif"} onChange={chooseImage} />
                           {field.hint && <small>{field.hint}</small>}
                           {values[field.key] && (
                             <button
@@ -373,7 +377,7 @@ export default function AdminDashboard({
                           onChange={(event) => setValues((old) => ({ ...old, [field.key]: field.kind === "number" ? Number(event.target.value) : event.target.value }))}
                         />
                       )}
-                      {field.hint && field.kind !== "image" && <small>{field.hint}</small>}
+                      {field.hint && field.kind !== "image" && field.kind !== "video" && <small>{field.hint}</small>}
                     </label>
                   ))}
                 </div>

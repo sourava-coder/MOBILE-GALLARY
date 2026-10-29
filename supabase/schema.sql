@@ -40,6 +40,7 @@ add column if not exists currency_code text not null default 'INR'
 check (currency_code in ('INR', 'USD', 'EUR', 'GBP'));
 alter table public.homepage_settings add column if not exists shop_image_url text;
 alter table public.homepage_settings add column if not exists shop_image_alt text default 'Mobile Gallary shop';
+alter table public.homepage_settings add column if not exists hero_video_url text;
 
 create table if not exists public.products (
   id uuid primary key default uuid_generate_v4(),
@@ -438,8 +439,8 @@ values (
   'shop-assets',
   'shop-assets',
   true,
-  5242880,
-  array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+  52428800,
+  array['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/webm']
 )
 on conflict (id) do update
 set public = excluded.public,
