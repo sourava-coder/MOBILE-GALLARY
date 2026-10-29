@@ -130,27 +130,38 @@ export function TeamRoster({ members }: { members: Member[] }) {
   );
 }
 
-export function ContactDetailsPanel({ contact, gallery = [] }: { contact: ContactDetails; gallery?: ShopPhoto[] }) {
+async function getMapEmbedUrl(contact: ContactDetails) {
+  if (contact.map_url) {
+    try {
+      const sourceUrl = new URL(contact.map_url);
+      if (sourceUrl.hostname === "maps.app.goo.gl") {
+        const signal = AbortSignal.timeout(2500);
+        const response = await fetch(sourceUrl, { redirect: "follow", cache: "no-store", signal });
+        const resolvedUrl = new URL(response.url);
+        if (resolvedUrl.hostname.includes("google.")) {
+          resolvedUrl.searchParams.set("output", "embed");
+          return resolvedUrl.toString();
+        }
+      } else if (sourceUrl.hostname.includes("google.")) {
+        sourceUrl.searchParams.set("output", "embed");
+        return sourceUrl.toString();
+      }
+    } catch (error) {
+      console.error("Could not resolve the saved Google Maps link.", error);
+    }
+  }
+
+  return contact.address
+    ? `https://www.google.com/maps?q=${encodeURIComponent(contact.address)}&output=embed`
+    : null;
+}
+
+export async function ContactDetailsPanel({ contact, gallery = [] }: { contact: ContactDetails; gallery?: ShopPhoto[] }) {
   const hasDetails = Boolean(
     contact.address || contact.phone || contact.email || contact.opening_hours ||
     contact.whatsapp || contact.map_url,
   );
-  const mapEmbedUrl = (() => {
-    if (contact.map_url) {
-      try {
-        const url = new URL(contact.map_url);
-        if (url.hostname.includes("google.") || url.hostname === "maps.google.com" || url.hostname === "maps.app.goo.gl") {
-          url.searchParams.set("output", "embed");
-          return url.toString();
-        }
-      } catch {
-        // Fall back to the saved address when an admin link is malformed.
-      }
-    }
-    return contact.address
-      ? `https://www.google.com/maps?q=${encodeURIComponent(contact.address)}&output=embed`
-      : null;
-  })();
+  const mapEmbedUrl = await getMapEmbedUrl(contact);
 
   return (
     <section className="contact-section contact-page-panel">
