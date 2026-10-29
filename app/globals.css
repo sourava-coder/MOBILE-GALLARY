@@ -574,16 +574,16 @@ button { cursor: pointer; }
   .brand { max-width: calc(100% - 96px); }
   .brand strong, .brand small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hero { padding-inline: 18px; }
-  .welcome-banner { min-height: 640px; }
-  .welcome-banner-image, .welcome-banner-video { object-fit: contain; object-position: center center; background: #160604; }
+  .welcome-banner { min-height: calc(100svh - 64px); height: max(640px, calc(100svh - 64px)); }
+  .welcome-banner-image, .welcome-banner-video { object-fit: cover; object-position: center center; }
   .welcome-banner-image.active { transform: scale(1); }
-  .welcome-banner-content { width: calc(100% - 28px); padding-bottom: 20px; }
+  .welcome-banner-content { width: calc(100% - 28px); padding: 18px 0 70px; }
   .welcome-banner-badge { padding: 9px 13px; font-size: 8px; letter-spacing: .18em; }
-  .welcome-banner h1 { margin-top: 21px; font-size: clamp(38px, 13vw, 58px); }
-  .welcome-banner p { font-size: 12px; }
+  .welcome-banner h1 { margin-top: 21px; font-size: clamp(36px, 11vw, 52px); }
+  .welcome-banner p { max-width: 315px; font-size: 12px; }
   .welcome-banner-actions { gap: 9px; }
   .welcome-banner-primary, .welcome-banner-secondary { width: 100%; justify-content: center; min-height: 50px; padding-inline: 16px; }
-  .welcome-banner-stats { left: 18px; right: 18px; bottom: 28px; justify-content: space-between; gap: 8px; }
+  .welcome-banner-stats { display: none; }
   .welcome-banner-stats strong { font-size: 19px; }
   .welcome-banner-stats span { font-size: 7px; letter-spacing: .08em; }
   .welcome-banner-dots { right: 18px; bottom: 10px; }
