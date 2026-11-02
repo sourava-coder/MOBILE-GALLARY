@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import WelcomeSplash from "@/components/welcome-splash";
 import ScrollToTop from "@/components/scroll-to-top";
+import { googleSiteVerification, siteUrl } from "@/lib/site-config";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -10,9 +11,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: siteUrl,
   title: "Mobile Gallary | Mobile, Repair, Care",
   description:
     "Discover mobile devices, accessories, and expert phone repairs at Mobile Gallary.",
+  ...(googleSiteVerification
+    ? { verification: { google: googleSiteVerification } }
+    : {}),
   icons: {
     icon: "/logo.png",
     shortcut: "/logo.png",

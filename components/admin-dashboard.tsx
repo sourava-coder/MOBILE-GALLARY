@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ImagePlus, LogOut, Plus, Save, Trash2, X } from "lucide-react";
 import type { AdminRecord, AdminResource } from "@/lib/types";
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 
 type FieldKind = "text" | "textarea" | "number" | "email" | "tel" | "url" | "select" | "checkbox" | "image" | "video";
 type FieldDefinition = { key: string; label: string; kind?: FieldKind; required?: boolean; hint?: string; options?: string[] };
@@ -200,18 +201,45 @@ export default function AdminDashboard({
     }
 
     if (imageFile) {
-      const formData = new FormData();
-      formData.set("file", imageFile);
-      formData.set("table", activeTable);
-      const uploadResponse = await fetch("/api/admin/upload", { method: "POST", body: formData });
-      const uploadResult = await uploadResponse.json() as { imageUrl?: string; mediaUrl?: string; error?: string };
-      if (!uploadResponse.ok || !(uploadResult.mediaUrl ?? uploadResult.imageUrl)) {
-        setError(`Media upload failed: ${uploadResult.error ?? "Request failed."}`);
-        setSaving(false);
-        return;
+      let mediaUrl: string | undefined;
+      const isVideo = selected.fields.some((field) => field.kind === "video");
+      if (isVideo) {
+        const signResponse = await fetch("/api/admin/upload/sign", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contentType: imageFile.type, size: imageFile.size }),
+        });
+        const signResult = await signResponse.json() as { path?: string; token?: string; mediaUrl?: string; error?: string };
+        const supabase = createSupabaseBrowserClient();
+        if (!signResponse.ok || !signResult.path || !signResult.token || !signResult.mediaUrl || !supabase) {
+          setError(`Media upload failed: ${signResult.error ?? "Could not prepare the upload."}`);
+          setSaving(false);
+          return;
+        }
+        const { error: uploadError } = await supabase.storage
+          .from("shop-assets")
+          .uploadToSignedUrl(signResult.path, signResult.token, imageFile);
+        if (uploadError) {
+          setError(`Media upload failed: ${uploadError.message}`);
+          setSaving(false);
+          return;
+        }
+        mediaUrl = signResult.mediaUrl;
+      } else {
+        const formData = new FormData();
+        formData.set("file", imageFile);
+        formData.set("table", activeTable);
+        const uploadResponse = await fetch("/api/admin/upload", { method: "POST", body: formData });
+        const uploadResult = await uploadResponse.json() as { imageUrl?: string; mediaUrl?: string; error?: string };
+        if (!uploadResponse.ok || !(uploadResult.mediaUrl ?? uploadResult.imageUrl)) {
+          setError(`Media upload failed: ${uploadResult.error ?? "Request failed."}`);
+          setSaving(false);
+          return;
+        }
+        mediaUrl = uploadResult.mediaUrl ?? uploadResult.imageUrl;
       }
       const mediaField = selected.fields.find((field) => field.kind === "image" || field.kind === "video");
-      if (mediaField) payload[mediaField.key] = uploadResult.mediaUrl ?? uploadResult.imageUrl ?? null;
+      if (mediaField) payload[mediaField.key] = mediaUrl ?? null;
     }
 
     const response = await fetch("/api/admin/content", {
