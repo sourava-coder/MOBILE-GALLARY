@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
-  title: "Mobile Gallary | Mobile, Repair, Care",
+  title: "Mobile Gallary Kujang | Mobile, Repair, Care",
   description:
     "Discover mobile devices, accessories, and expert phone repairs at Mobile Gallary.",
   ...(googleSiteVerification
